@@ -167,7 +167,7 @@ const json = await post({
         }
 
         xhr.onload = function() {
-            if(xhr.status === 200) {
+            if(xhr.status >= 200 && xhr.status <300 || xhr.status === 304) {
                 let res = JSON.parse(xhr.responseText)
                 resolve(res)
             } else {
