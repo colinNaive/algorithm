@@ -146,3 +146,45 @@ const json = await post({
 
     }
  })
+
+ /**
+  * 手写ajax
+  */
+ function ajax({type = '', url, params = {}}) {
+    return new Promise((resolve, reject) => {
+        let xhr = XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP')
+        let requestType = type.toUpperCase()
+        if(requestType === 'GET') {
+            let paramData = formatParams(params)
+            xhr.open(requestType, url + '?' + paramData, true)
+            xhr.send()
+        } else if(requestType === 'POST') {
+            xhr.open(type, url, true)
+            xhr.setRequestHeader('Content-type', "application/x-www-form-urlencoded")
+            xhr.send(params)
+        } else {
+            reject()
+        }
+
+        xhr.onload = function() {
+            if(xhr.status === 200) {
+                let res = JSON.parse(xhr.responseText)
+                resolve(res)
+            } else {
+                reject()
+            }
+        }
+    })
+
+    function formatParams(data = {}) {
+        let arr = []
+        for(let key in data) {
+            if(data.hasOwnProperty(key)) {
+                arr.push(encodeURIComponent(key)+'='+encodeURIComponent(data[key]))
+            }
+        }
+        return arr.join('&')
+    }
+ }
+
+ 
